@@ -120,26 +120,27 @@ loai_nguoi_dung VARCHAR(225)
 )
 INSERT INTO nguoi_dung (tai_khoan, ho_ten, email, so_dt, mat_khau, loai_nguoi_dung)
 VALUES
-    (1, 'Nguyen Van A', 'nguyen.a@example.com', '0123456789', 'hashed_password_1', 'normal'),
-    (2, 'Tran Thi B', 'tran.b@example.com', '0987654321', 'hashed_password_2', 'premium'),
-    (3, 'Le Van C', 'le.c@example.com', '0123456789', 'hashed_password_3', 'normal'),
-    (4, 'Pham Thi D', 'pham.d@example.com', '0987654321', 'hashed_password_4', 'premium'),
-    (5, 'Hoang Van E', 'hoang.e@example.com', '0123456789', 'hashed_password_5', 'normal'),
-    (6, 'Nguyen Thi F', 'nguyen.f@example.com', '0987654321', 'hashed_password_6', 'premium'),
-    (7, 'Tran Van G', 'tran.g@example.com', '0123456789', 'hashed_password_7', 'normal'),
-    (8, 'Le Thi H', 'le.h@example.com', '0987654321', 'hashed_password_8', 'premium'),
-    (9, 'Pham Van I', 'pham.i@example.com', '0123456789', 'hashed_password_9', 'normal'),
-    (10, 'Khoi', 'khoidang@gmail.com', '0987654321', '$2b$10$rqFyT71i2Hgga.9.brY/V.jI4gSZe1p8.l9Bo1pDMAVZnLoWO14g.', 'premium');
-create table lich_chieu(
-ma_lich_chieu int PRIMARY key AUTO_INCREMENT,
-ma_rap int,
-ma_phim int,
-ngay_gio_chieu datetime,
-gia_ve int,
-    FOREIGN KEY (ma_rap) REFERENCES rap_phim(ma_rap) ON DELETE  set null ON UPDATE CASCADE,
-     FOREIGN KEY (ma_phim) REFERENCES phim(ma_phim) ON DELETE  set null ON UPDATE CASCADE
-
-)
+    (1, 'Nguyen Van A', 'nguyen.a@example.com', '0123456789', 'hashed_password_1', 'KhachHang'),
+    (2, 'Tran Thi B', 'tran.b@example.com', '0987654321', 'hashed_password_2', 'KhachHang'),
+    (3, 'Le Van C', 'le.c@example.com', '0123456789', 'hashed_password_3', 'KhachHang'),
+    (4, 'Pham Thi D', 'pham.d@example.com', '0987654321', 'hashed_password_4', 'KhachHang'),
+    (5, 'Hoang Van E', 'hoang.e@example.com', '0123456789', 'hashed_password_5', 'KhachHang'),
+    (6, 'Nguyen Thi F', 'nguyen.f@example.com', '0987654321', 'hashed_password_6', 'KhachHang'),
+    (7, 'Tran Van G', 'tran.g@example.com', '0123456789', 'hashed_password_7', 'KhachHang'),
+    (8, 'Le Thi H', 'le.h@example.com', '0987654321', 'hashed_password_8', 'QuanTri'),
+    (9, 'Pham Van I', 'pham.i@example.com', '0123456789', 'hashed_password_9', 'QuanTri'),
+    (145, 'Khoi', 'khoidang@gmail.com', '0987654321', '$2b$10$rqFyT71i2Hgga.9.brY/V.jI4gSZe1p8.l9Bo1pDMAVZnLoWO14g.', 'QuanTri');
+CREATE TABLE lich_chieu (
+    ma_lich_chieu INT AUTO_INCREMENT,
+    ma_rap INT,
+    ma_phim INT,
+    ngay_gio_chieu DATETIME,
+    gia_ve INT,
+    PRIMARY KEY (ma_lich_chieu),
+    FOREIGN KEY (ma_rap) REFERENCES rap_phim(ma_rap) ON DELETE CASCADE ON UPDATE CASCADE,
+    FOREIGN KEY (ma_phim) REFERENCES phim(ma_phim) ON DELETE CASCADE ON UPDATE CASCADE
+   
+);
 INSERT INTO lich_chieu (ma_lich_chieu, ma_rap, ma_phim, ngay_gio_chieu, gia_ve)
 VALUES
     (1, 1, 11, '2024-02-10 14:30:00', 100000),
@@ -172,19 +173,20 @@ INSERT INTO ghe (ten_ghe, loai_ghe, ma_rap) VALUES
     ('Ghe 9', 'VIP', 3),
     ('Ghe 10', 'Thuong', 4);
 
-create table dat_ve(
-    id int primary key AUTO_INCREMENT,
-    tai_khoan int,
-   ma_lich_chieu int,
-     ma_ghe int,
-    FOREIGN KEY (tai_khoan) REFERENCES nguoi_dung(tai_khoan) ON DELETE  set null ON UPDATE CASCADE,
-     FOREIGN KEY (ma_lich_chieu) REFERENCES lich_chieu(ma_lich_chieu) ON DELETE  set null ON UPDATE CASCADE,
-    FOREIGN KEY (ma_ghe) REFERENCES ghe(ma_ghe) ON DELETE  set null ON UPDATE CASCADE
-)
+CREATE TABLE dat_ve (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tai_khoan INT,
+    ma_lich_chieu INT,
+    ma_ghe INT,
+  
+    FOREIGN KEY (ma_lich_chieu) REFERENCES lich_chieu(ma_lich_chieu) ON DELETE CASCADE ON UPDATE CASCADE,
+   FOREIGN KEY (tai_khoan) REFERENCES nguoi_dung(tai_khoan) ON DELETE CASCADE ON UPDATE CASCADE,
+FOREIGN KEY (ma_ghe) REFERENCES ghe(ma_ghe) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
 INSERT INTO dat_ve (tai_khoan, ma_lich_chieu, ma_ghe)
 VALUES
-    (1, 1, 11),
+    (2, 1, 11),
     (3, 3, 13),
     (4, 4, 14),
     (5, 5, 15),
@@ -192,4 +194,4 @@ VALUES
     (7, 7, 17),
     (8, 8, 18),
     (9, 9, 19),
-    (2, 10, 20);
+    (2, 1, 20);

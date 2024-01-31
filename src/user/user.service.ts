@@ -1,8 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateUserDto, UserTypesDto } from './dto/user.dto';
+import { CreateUserDto, UpdateUserDto, UserTypesDto } from './dto/user.dto';
 import { PrismaClient } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
-
+import * as bcrypt from 'bcrypt';
 @Injectable()
 export class UserService {
   constructor(private configService: ConfigService) {}
@@ -21,12 +21,17 @@ export class UserService {
           message: 'User already exists',
         };
       }
-      const result = await this.prisma.nguoi_dung.create({
-        data: body,
+      const hashedPassword = await bcrypt.hash(body.mat_khau, 10);
+
+      await this.prisma.nguoi_dung.create({
+        data: {
+          ...body,
+          mat_khau:hashedPassword,
+        }
       });
       return {
         status: 201,
-        data: 'Registered Successfully',
+        data: 'Đăng ký thành công',
       };
     } catch (error) {
       console.error('Error creating user:', error);
@@ -61,10 +66,10 @@ export class UserService {
         let ten_loai = '';
 
         // Assign userTypeName based on user type
-        if (user.loai_nguoi_dung === 'normal') {
-          ten_loai = 'N';
-        } else if (user.loai_nguoi_dung === 'premium') {
-          ten_loai = 'P';
+        if (user.loai_nguoi_dung === 'KhachHang') {
+          ten_loai = 'Khách Hàng';
+        } else if (user.loai_nguoi_dung === 'QuanTri') {
+          ten_loai = 'Quản Trị';
         }
 
         const userDto: UserTypesDto = {
@@ -131,7 +136,7 @@ export class UserService {
     }
   }
 
-  async updateUser(body: CreateUserDto): Promise<any> {
+  async updateUser(body: UpdateUserDto): Promise<any> {
     try {
       const existingUser = await this.prisma.nguoi_dung.findUnique({
         where: {
@@ -154,7 +159,6 @@ export class UserService {
           ho_ten: body.ho_ten,
           email: body.email,
           so_dt: body.so_dt,
-          mat_khau: body.mat_khau,
           loai_nguoi_dung: body.loai_nguoi_dung,
         },
       });

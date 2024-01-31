@@ -13,7 +13,7 @@ import {
   Res,
   Req,
 } from '@nestjs/common';
-import { CreateUserDto, UserInfoDto, UserTypesDto } from './dto/user.dto';
+import { CreateUserDto, UpdateUserDto, UserInfoDto, UserTypesDto } from './dto/user.dto';
 import { UserService } from './user.service';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiBody, ApiParam, ApiTags } from '@nestjs/swagger';
@@ -72,7 +72,7 @@ export class UserController {
   }
   @Put('CapNhatThongTinNguoiDung')
   @ApiBody({description:"thong tin cap nhat",type:CreateUserDto})
-  updateUser(@Body() body: CreateUserDto): Promise<any> {
+  updateUser(@Body() body: UpdateUserDto): Promise<any> {
     const userDtos = this.userService.updateUser(body);
     return userDtos;
   }

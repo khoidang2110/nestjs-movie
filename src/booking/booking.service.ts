@@ -82,15 +82,15 @@ export class BookingService {
       if (reqUser)  {
         const { ma_lich_chieu, danh_sach_ve } = body;
 
-        const checkMaLichChieu = await this.prisma.dat_ve.findMany({
-          where: {
-            ma_lich_chieu: ma_lich_chieu,
-          },
-        });
+        // const checkMaLichChieu = await this.prisma.dat_ve.findMany({
+        //   where: {
+        //     ma_lich_chieu: ma_lich_chieu,
+        //   },
+        // });
 
-        if (checkMaLichChieu.length !== 0) {
-          return { success: false, message: 'Mã lịch chiếu bị trùng' };
-        }
+        // if (checkMaLichChieu.length !== 0) {
+        //   return { success: false, message: 'Mã lịch chiếu bị trùng' };
+        // }
 
         const seatExistenceChecks = await Promise.all(
           danh_sach_ve.map(async (item) => {

@@ -1,0 +1,46 @@
+testAPI:
+
+1. dang nhap
+{
+    "email":"khoidang@gmail.com",
+    "mat_khau": "123123"
+}
+2.dang ky
+{
+    "tai_khoan": 14567,
+    "ho_ten":"prisma async",
+   "email":"abc@gmail.com",
+    "so_dt":"0909090909",
+    "mat_khau":"schma",
+    "loai_nguoi_dung":"QuanTri"
+}
+3.cap nhat thong tin nguoi dung
+
+{
+    "tai_khoan": 1,
+    "ho_ten":"prisma async",
+   "email":"abc",
+    "so_dt":"abc",
+    "loai_nguoi_dung":"QuanTri"
+}
+4.dat ve
+{
+  "ma_lich_chieu": 1,
+  "danh_sach_ve": [
+    {
+      "ma_ghe": 11
+          },
+  {
+      "ma_ghe":17
+         }]
+}
+
+.5 tao lich chieu
+{
+      "ma_lich_chieu":1234338,
+  "ma_phim": 18,
+  "ngay_gio_chieu":"2024-01-24 10:38:03",
+  "ma_rap": 4,
+  "gia_ve": 1055000
+}
+  
