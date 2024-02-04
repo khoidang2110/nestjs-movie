@@ -1,12 +1,11 @@
 {
   
 
-    "main": "dist/main.js",
+ 
     "name": "node38_nestjs_movie",
     "version": "0.0.1",
     "description": "",
     "author": "",
-    "type": "module",
     "private": true,
     "license": "UNLICENSED",
     "scripts": {
