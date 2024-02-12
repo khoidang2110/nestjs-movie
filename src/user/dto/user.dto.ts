@@ -11,6 +11,7 @@ export class UpdateUserDto {
   ho_ten: string;
   email: string;
   so_dt: string;
+  mat_khau: string;
   loai_nguoi_dung: string;
 }
 

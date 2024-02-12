@@ -2,10 +2,16 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateUserDto, UpdateUserDto, UserTypesDto } from './dto/user.dto';
 import { PrismaClient } from '@prisma/client';
 import { ConfigService } from '@nestjs/config';
+import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcrypt';
 @Injectable()
 export class UserService {
-  constructor(private configService: ConfigService) {}
+  constructor(
+    private jwtService: JwtService,
+    private configService:ConfigService
+  ){
+
+  }
   prisma = new PrismaClient();
 
   async create(body: CreateUserDto): Promise<any> {
@@ -150,22 +156,44 @@ export class UserService {
           message: 'User not found',
         };
       }
+      //const hashedPassword = await bcrypt.hash(body.mat_khau, 10);
+let hashedPassword='';
+if(body.mat_khau){
+  hashedPassword = await bcrypt.hash(body.mat_khau, 10);
+}
 
-      await this.prisma.nguoi_dung.update({
+
+      const updatedUser =  await this.prisma.nguoi_dung.update({
         where: {
           tai_khoan: body.tai_khoan,
         },
         data: {
-          ho_ten: body.ho_ten,
-          email: body.email,
-          so_dt: body.so_dt,
-          loai_nguoi_dung: body.loai_nguoi_dung,
+          ho_ten: body.ho_ten ? body.ho_ten : existingUser.ho_ten,
+          email: body.email ? body.email : existingUser.email,
+          so_dt: body.so_dt ? body.so_dt : existingUser.so_dt,
+          mat_khau:body.mat_khau ? hashedPassword : existingUser.mat_khau,
+          loai_nguoi_dung: body.loai_nguoi_dung ? body.loai_nguoi_dung :existingUser.loai_nguoi_dung,
         },
       });
 
+      let payload = {
+        tai_khoan: updatedUser.tai_khoan,
+        ho_ten: updatedUser.ho_ten,
+        email: updatedUser.email,
+        so_dt: updatedUser.so_dt,
+        mat_khau:updatedUser.mat_khau,
+        loai_nguoi_dung: updatedUser.loai_nguoi_dung,
+      }
+
+      let token = this.jwtService.sign(payload,{
+        secret:this.configService.get("SECRET_KEY"),
+      expiresIn:this.configService.get("EXPIRES_IN"),
+      })
+      
       return {
         status: 200,
         message: 'Update successful',
+        token: token
       };
     } catch (error) {
       console.error('Error updating user:', error);

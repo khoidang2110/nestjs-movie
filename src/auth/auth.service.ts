@@ -31,9 +31,12 @@ export class AuthService {
           let isCorrectPass = bcrypt.compareSync(mat_khau,checkUser.mat_khau);
           if(isCorrectPass){
             let payload = {
-              user_id: checkUser.tai_khoan,
+              tai_khoan: checkUser.tai_khoan,
+              ho_ten:checkUser.ho_ten,
               email: checkUser.email,
-              role:checkUser.loai_nguoi_dung
+              so_dt:checkUser.so_dt,
+              mat_khau:checkUser.mat_khau,
+              loai_nguoi_dung:checkUser.loai_nguoi_dung
             }
             // nếu password matching => tạo token 
             let token = this.jwtService.sign(payload,{
