@@ -72,8 +72,8 @@ export class UserController {
   }
   @Put('CapNhatThongTinNguoiDung')
   @ApiBody({description:"thong tin cap nhat",type:CreateUserDto})
-  updateUser(@Body() body: UpdateUserDto): Promise<any> {
-    const userDtos = this.userService.updateUser(body);
+  updateUser(@Body() body: UpdateUserDto,@Req() req): Promise<any> {
+    const userDtos = this.userService.updateUser(body,req);
     return userDtos;
   }
   @ApiParam({name:"id",required:false,description:"user id"})

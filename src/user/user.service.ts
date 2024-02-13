@@ -8,10 +8,8 @@ import * as bcrypt from 'bcrypt';
 export class UserService {
   constructor(
     private jwtService: JwtService,
-    private configService:ConfigService
-  ){
-
-  }
+    private configService: ConfigService,
+  ) {}
   prisma = new PrismaClient();
 
   async create(body: CreateUserDto): Promise<any> {
@@ -27,13 +25,24 @@ export class UserService {
           message: 'User already exists',
         };
       }
+      const exitingEmail = await this.prisma.nguoi_dung.findFirst({
+        where: {
+          email: body.email,
+        },
+      });
+      if (exitingEmail) {
+        return {
+          status: 409,
+          message: 'Email already exists',
+        };
+      }
       const hashedPassword = await bcrypt.hash(body.mat_khau, 10);
 
       await this.prisma.nguoi_dung.create({
         data: {
           ...body,
-          mat_khau:hashedPassword,
-        }
+          mat_khau: hashedPassword,
+        },
       });
       return {
         status: 201,
@@ -142,8 +151,9 @@ export class UserService {
     }
   }
 
-  async updateUser(body: UpdateUserDto): Promise<any> {
+  async updateUser(body: UpdateUserDto,req:any): Promise<any> {
     try {
+      const reqUser = req.user;
       const existingUser = await this.prisma.nguoi_dung.findUnique({
         where: {
           tai_khoan: body.tai_khoan,
@@ -156,14 +166,20 @@ export class UserService {
           message: 'User not found',
         };
       }
+   // nếu user là KhachHang thì chỉ được update account của chính mình, còn user là QuanTri thì được update tất cả account
+      if(reqUser.tai_khoan !== body.tai_khoan && reqUser.loai_nguoi_dung == "KhachHang"){
+        return {
+          status: 404, 
+          message: 'You are not the owner',
+        };
+      }
       //const hashedPassword = await bcrypt.hash(body.mat_khau, 10);
-let hashedPassword='';
-if(body.mat_khau){
-  hashedPassword = await bcrypt.hash(body.mat_khau, 10);
-}
+      let hashedPassword = '';
+      if (body.mat_khau) {
+        hashedPassword = await bcrypt.hash(body.mat_khau, 10);
+      }
 
-
-      const updatedUser =  await this.prisma.nguoi_dung.update({
+      const updatedUser = await this.prisma.nguoi_dung.update({
         where: {
           tai_khoan: body.tai_khoan,
         },
@@ -171,8 +187,10 @@ if(body.mat_khau){
           ho_ten: body.ho_ten ? body.ho_ten : existingUser.ho_ten,
           email: body.email ? body.email : existingUser.email,
           so_dt: body.so_dt ? body.so_dt : existingUser.so_dt,
-          mat_khau:body.mat_khau ? hashedPassword : existingUser.mat_khau,
-          loai_nguoi_dung: body.loai_nguoi_dung ? body.loai_nguoi_dung :existingUser.loai_nguoi_dung,
+          mat_khau: body.mat_khau ? hashedPassword : existingUser.mat_khau,
+          loai_nguoi_dung: body.loai_nguoi_dung
+            ? body.loai_nguoi_dung
+            : existingUser.loai_nguoi_dung,
         },
       });
 
@@ -181,19 +199,19 @@ if(body.mat_khau){
         ho_ten: updatedUser.ho_ten,
         email: updatedUser.email,
         so_dt: updatedUser.so_dt,
-        mat_khau:updatedUser.mat_khau,
+        mat_khau: updatedUser.mat_khau,
         loai_nguoi_dung: updatedUser.loai_nguoi_dung,
-      }
+      };
 
-      let token = this.jwtService.sign(payload,{
-        secret:this.configService.get("SECRET_KEY"),
-      expiresIn:this.configService.get("EXPIRES_IN"),
-      })
-      
+      let token = this.jwtService.sign(payload, {
+        secret: this.configService.get('SECRET_KEY'),
+        expiresIn: this.configService.get('EXPIRES_IN'),
+      });
+
       return {
         status: 200,
         message: 'Update successful',
-        token: token
+        token: token,
       };
     } catch (error) {
       console.error('Error updating user:', error);
@@ -224,9 +242,11 @@ if(body.mat_khau){
       const reqUser = req.user;
       if (reqUser) {
         const userInfo = {
-          tai_khoan: reqUser.user_id,
+          tai_khoan: reqUser.tai_khoan,
+          ho_ten:reqUser.ho_ten,
           email: reqUser.email,
-          loai_nguoi_dung: reqUser.role,
+          so_dt:reqUser.so_dt,
+          loai_nguoi_dung: reqUser.loai_nguoi_dung,
         };
         const bookingInfo = await this.prisma.dat_ve.findMany({
           where: {
