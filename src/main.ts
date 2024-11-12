@@ -19,7 +19,8 @@ app.useGlobalPipes( new ValidationPipe());
   const swagger = SwaggerModule.createDocument(app,config);
 
   // setup swagger với đường dẫn là /swagger
-  SwaggerModule.setup("swagger",app,swagger)
+  //SwaggerModule.setup("swagger",app,swagger)
+  SwaggerModule.setup('api/swagger', app, swagger);
   app.setGlobalPrefix('api'); 
   await app.listen(4000);
 }
