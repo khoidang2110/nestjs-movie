@@ -21,6 +21,6 @@ app.useGlobalPipes( new ValidationPipe());
   // setup swagger với đường dẫn là /swagger
   SwaggerModule.setup("swagger",app,swagger)
 
-  await app.listen(3000);
+  await app.listen(4000);
 }
 bootstrap();

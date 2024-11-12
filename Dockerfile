@@ -20,7 +20,7 @@ COPY . .
 RUN npm install
 
 #B5: expose port cho bên ngoài connect tới 
-EXPOSE 3000
+EXPOSE 4000
 
 #B6: start server trong image
 
