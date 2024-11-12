@@ -20,7 +20,7 @@ app.useGlobalPipes( new ValidationPipe());
 
   // setup swagger với đường dẫn là /swagger
   SwaggerModule.setup("swagger",app,swagger)
-
+  app.setGlobalPrefix('api'); 
   await app.listen(4000);
 }
 bootstrap();
